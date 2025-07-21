@@ -2,3 +2,8 @@
 2. top or ps -aux
 3. kill PID
 4. vimdiff file1 file2
+5. mv file
+6. chmod num1num2num3 filename
+7. pwd
+8. ping -c times example.com
+9. ls -l 
