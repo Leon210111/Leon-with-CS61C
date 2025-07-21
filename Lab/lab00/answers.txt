@@ -1,4 +1,4 @@
-1.
-2.
-3.
-4.
+1. find /path -type f -exec grep "keyword" {} +
+2. top or ps -aux
+3. kill PID
+4. vimdiff file1 file2
