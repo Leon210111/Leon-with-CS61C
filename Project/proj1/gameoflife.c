@@ -36,7 +36,7 @@ Color *evaluateOneCell(Image *image, int row, int col, uint32_t rule)
 	int current_G = current_color->G / 255;	
 	int current_B = current_color->B / 255;	
 		
-	for (int i = 0; i < 9; i++) {
+	for (int i = 0; i < 8; i++) {
 		int id = ring(col + dx[i], image->cols) + ring(row + dy[i], image->rows) * image->cols;
 		alive_R += ((*(image->image + id))->R) / 255;	
 		alive_G += ((*(image->image + id))->G) / 255;	
