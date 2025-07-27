@@ -17,12 +17,37 @@
 #include <inttypes.h>
 #include "imageloader.h"
 
+int dx[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+int dy[8] = {1, 0, -1, 1, -1, 1, 0, -1};
+
+int ring(int n, int m) {
+	return (n + m) % m;
+}
 //Determines what color the cell at the given row/col should be. This function allocates space for a new Color.
 //Note that you will need to read the eight neighbors of the cell in question. The grid "wraps", so we treat the top row as adjacent to the bottom row
 //and the left column as adjacent to the right column.
 Color *evaluateOneCell(Image *image, int row, int col, uint32_t rule)
 {
 	//YOUR CODE HERE
+	Color *new_color = (Color*)malloc(sizeof(Color));
+	Color *current_color = *(image->image + col + image->cols * row);
+	int alive_R = 0, alive_G = 0, alive_B = 0;
+	int current_R = current_color->R / 255;	
+	int current_G = current_color->G / 255;	
+	int current_B = current_color->B / 255;	
+		
+	for (int i = 0; i < 9; i++) {
+		int id = ring(col + dx[i], image->cols) + ring(row + dy[i], image->rows) * image->cols;
+		alive_R += ((*(image->image + id))->R) / 255;	
+		alive_G += ((*(image->image + id))->G) / 255;	
+		alive_B += ((*(image->image + id))->B) / 255;	
+	}
+
+	new_color->R = (rule & (1 << (current_R * 9 + alive_R))) ? 255 : 0; 
+	new_color->G = (rule & (1 << (current_G * 9 + alive_G))) ? 255 : 0; 
+	new_color->B = (rule & (1 << (current_B * 9 + alive_B))) ? 255 : 0; 
+
+	return new_color;
 }
 
 //The main body of Life; given an image and a rule, computes one iteration of the Game of Life.
@@ -30,6 +55,17 @@ Color *evaluateOneCell(Image *image, int row, int col, uint32_t rule)
 Image *life(Image *image, uint32_t rule)
 {
 	//YOUR CODE HERE
+	Image *new_img = (Image *)malloc(sizeof(Image));
+	new_img->cols = image->cols;
+	new_img->rows = image->rows;
+	new_img->image = (Color**)malloc(sizeof(Color*) * (image->rows) * (image->cols));
+	Color** p = new_img->image;
+	for (int i = 0; i < new_img->rows; i++)
+		for (int j = 0; j < new_img->cols; j++) {
+			*p = evaluateOneCell(image, i, j, rule);
+			p++;
+		}
+	return new_img;
 }
 
 /*
@@ -50,4 +86,20 @@ You may find it useful to copy the code from steganography.c, to start.
 int main(int argc, char **argv)
 {
 	//YOUR CODE HERE
+	if (argc != 3) {
+		printf("usage: ./gameOfLife filename rule\n");
+		printf("filename is an ASCII PPM file (type P3) with maximum value 255.\n");
+		printf("rule is a hex number beginning with 0x; Life is 0x1808.\n");
+		exit(-1);
+	}
+	Image *img = readData(argv[1]);
+	if (img ==NULL) {
+		exit(-1);
+	}
+	uint32_t rule = strtol(argv[2], NULL, 16);
+	Image *next_img = life(img, rule);
+	writeData(next_img);
+	freeImage(img);
+	freeImage(next_img);
+	return 0;
 }
