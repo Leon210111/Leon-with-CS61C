@@ -479,6 +479,7 @@ class TestClassify(TestCase):
         t.call("classify")
         # generate assembly and pass program arguments directly to venus
         t.execute(args=args, code=89)
+   
     
 
     @classmethod
