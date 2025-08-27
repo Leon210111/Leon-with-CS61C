@@ -1,8 +1,8 @@
-1.
-2.
+1.jki and kji
+2.ikj and kij
 
 --- lines below are ignored by the AG ---
 
-Checkoff Question 1:
-Checkoff Question 2:
-Checkoff Question 3:
+Checkoff Question 1: Because in the innermost iteration, it moves through B with stride 0 and moves through A and C with stride 1.
+Checkoff Question 2:Because in the innermost iteration, it moves through B and C with stride n.
+Checkoff Question 3:We stride through the matrices with respect to the innermost loop continuous can reduce the time to multiply the matrices.
