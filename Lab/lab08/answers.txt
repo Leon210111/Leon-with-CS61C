@@ -1,19 +1,19 @@
 Exercise 1:
-    1.
-    2.
-    3.
+    1.8
+    2.4,6,0,6
+    3.No.No
 
 Exercise 2:
-    1.
+    1.00, 20, 40, 60, 80, A0, C0, E0, 00, 20
 
 Exercise 3:
-    1.
+    1.Physical memory size.
 
 --- lines below are ignored by the AG ---
 
 Exercise 1 Checkoff Questions:
-    1.
-    2.
+    1.First,check the TLB.It's empty and a TLB miss.Then check the PT.Its valid bits is 0 and a page fault.So we go into the disk to get the page.
+    2.Because there are 8 virtual pages and 4 physical frames.
 
 Exercise 4 Checkoff Question:
-    1.
+    1.Can't see the simulation.
