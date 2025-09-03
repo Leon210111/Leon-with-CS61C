@@ -50,12 +50,24 @@ long long int sum_simd(int vals[NUM_ELEMS]) {
 	__m128i _127 = _mm_set1_epi32(127);		// This is a vector with 127s in it... Why might you need this?
 	long long int result = 0;				   // This is where you should put your final result!
 	/* DO NOT DO NOT DO NOT DO NOT WRITE ANYTHING ABOVE THIS LINE. */
-	
+	int* inner_sum;
+	inner_sum = malloc(sizeof(int) * 4); // This is the array to store the inner sum.
 	for(unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
 		/* YOUR CODE GOES HERE */
-
+               __m128i _sum = _mm_setzero_si128(); // This is the vector to store the inner sum.
+               for (int unsigned i = 0; i < NUM_ELEMS / 4; i++){
+		       __m128i _entry = _mm_loadu_si128((__m128i*)(vals + i * 4));
+		       __m128i _mask = _mm_cmpgt_epi32(_entry, _127);
+		       _sum = _mm_add_epi32(_mm_and_si128(_entry, _mask), _sum);
+	       }
+	       _mm_storeu_si128((__m128i*)inner_sum, _sum);
+	       for (unsigned int j = 0; j < 4; j++){
+	       	result += *(inner_sum + j);
+	       }
 		/* You'll need a tail case. */
-
+	       for (int k = NUM_ELEMS / 4 * 4; k < NUM_ELEMS; k++){
+		       if (*(vals + k) > 128) result += *(vals + k);
+	       }
 	}
 	clock_t end = clock();
 	printf("Time taken: %Lf s\n", (long double)(end - start) / CLOCKS_PER_SEC);
@@ -66,10 +78,28 @@ long long int sum_simd_unrolled(int vals[NUM_ELEMS]) {
 	clock_t start = clock();
 	__m128i _127 = _mm_set1_epi32(127);
 	long long int result = 0;
+	int* inner_sum;
+        inner_sum = malloc(sizeof(int) * 4); // This is the array to store the inner sum.
 	for(unsigned int w = 0; w < OUTER_ITERATIONS; w++) {
 		/* COPY AND PASTE YOUR sum_simd() HERE */
 		/* MODIFY IT BY UNROLLING IT */
-
+		__m128i _sum = _mm_setzero_si128(); // This is the vector to store the inner sum.
+               for (int unsigned i = 0; i < NUM_ELEMS / 8; i++){
+                       __m128i _entry = _mm_loadu_si128((__m128i*)(vals + i * 8));
+                       __m128i _mask = _mm_cmpgt_epi32(_entry, _127);
+                       _sum = _mm_add_epi32(_mm_and_si128(_entry, _mask), _sum);
+			_entry = _mm_loadu_si128((__m128i*)(vals + i * 8 + 4));
+                        _mask = _mm_cmpgt_epi32(_entry, _127);
+                       _sum = _mm_add_epi32(_mm_and_si128(_entry, _mask), _sum);
+               }
+               _mm_storeu_si128((__m128i*)inner_sum, _sum);
+               for (unsigned int j = 0; j < 4; j++){
+                result += *(inner_sum + j);
+               }
+                /* You'll need a tail case. */
+               for (int k = NUM_ELEMS / 8 * 8; k < NUM_ELEMS; k++){
+		       if (*(vals + k) > 128) result += *(vals + k);
+               }
 		/* You'll need 1 or maybe 2 tail cases here. */
 
 	}
