@@ -6,7 +6,7 @@ char *report = "report.txt";
 int main(int argc, char **argv) {
    signal(SIGINT, signal_callback_handler);
 
-// default configs
+// default configs1:i
    server_port = 8000;
    server_files_directory = "./files/";
 

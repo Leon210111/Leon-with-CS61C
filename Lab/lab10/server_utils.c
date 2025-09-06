@@ -1,6 +1,8 @@
 #include "server_utils.h"
 #include <unistd.h>
 
+//int server_port = 8000;
+//char server_files_directory = "./files/";
 char *header_tag_left = "<center><h1>";
 char *header_tag_right = "</h1><hr></center>";
 char *content_type = "Content-Type";
@@ -253,21 +255,31 @@ void serve_forever(int *socket_number) {
 #ifdef PROC
       // PART 2 TASK: Implement forking
       /* YOUR CODE HERE */
-
-      if (/* YOUR CODE HERE */) {
-         // This line kills the child process if parent dies
+      pid_t child_pid;
+      child_pid = fork();
+      if (child_pid == 0) {
+	 // This line kills the child process if parent dies
          int r = prctl(PR_SET_PDEATHSIG, SIGTERM);
 
          /* YOUR CODE HERE */
-         
          // These lines exit the current process with code 1 
          // 1) when there was an error in prctl, 2) when the parent has been killed
          if (r == -1 || getppid() != parent_pid) {
             perror(0);
-            exit(1);
-         }
-
-         /* YOUR CODE HERE */
+            exit(1);}
+         
+	  /* YOUR CODE HERE */
+	 dispatch(client_socket_number);
+	 close(client_socket_number);
+         exit(0); 
+	 }else if (child_pid > 0) {
+         // Parent process can close its copy of the socket
+         close(client_socket_number);
+         // Optionally wait for child if needed: waitpid(child_pid, NULL, 0);
+      } else {
+         // Fork failed
+         perror("fork failed");
+         close(client_socket_number);
       }
 #else
       dispatch(client_socket_number);

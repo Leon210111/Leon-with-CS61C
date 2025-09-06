@@ -23,10 +23,10 @@
 #include "omp_apps.h"
 #include "libhttp/libhttp.h"
 
-/** Global configuration variables. */
+/** Global configuration variables.*/ 
 int server_fd;
 int server_port;
-char *server_files_directory;
+char server_files_directory;
 
 extern char *USAGE;
 extern char *report;
